@@ -8,6 +8,7 @@ private:
 	void CreateControls();
 	void BindEvents();
 	void AddSavedTasks();
+	void SetupSizers();
 
 	void OnAddClick(wxCommandEvent& evt);
 	void OnInputEnter(wxCommandEvent& evt);

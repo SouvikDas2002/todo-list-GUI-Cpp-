@@ -7,7 +7,7 @@
 
 void saveTaskToFile(const std::vector<Task>& tasks, const std::string& filename)
 {
-	std::ofstream ostream(filename);
+	std::ofstream ostream(filename);  //ofstream class describes an output stream and it is used to create files and write data to files
 	ostream << tasks.size();
 
 	for (const Task& task : tasks) {

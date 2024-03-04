@@ -8,6 +8,7 @@ MainFrame::MainFrame(const wxString& title) :wxFrame(nullptr, wxID_ANY, title) {
 	CreateControls();
 	BindEvents();
 	AddSavedTasks();
+	SetupSizers();
 }
 
 void MainFrame::CreateControls()
@@ -20,14 +21,14 @@ void MainFrame::CreateControls()
 	panel->SetFont(mainFont);
 	//panel->SetBackgroundColour(*wxLIGHT_GREY);
 
-	headlineText = new wxStaticText(panel, wxID_ANY, "TO-Do List", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
+	headlineText = new wxStaticText(panel, wxID_ANY, "TO-Do List");
 	headlineText->SetFont(headlineFont);
 	//headlineText->SetBackgroundColour(*wxRED);
 
-	inputField = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(100, 80), wxSize(495, 35),wxTE_PROCESS_ENTER); //precess_enter helps to process input text after press enter
-	addButton = new wxButton(panel, wxID_ANY, "Add Task", wxPoint(600, 80), wxSize(100, 35));
-	checkBox = new wxCheckListBox(panel, wxID_ANY, wxPoint(100, 120), wxSize(600, 400));
-	clearButton = new wxButton(panel, wxID_ANY, "Clear", wxPoint(100, 525), wxSize(100, 35));
+	inputField = new wxTextCtrl(panel, wxID_ANY, "",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER); //precess_enter helps to process input text after press enter
+	addButton = new wxButton(panel, wxID_ANY, "Add Task");
+	checkBox = new wxCheckListBox(panel, wxID_ANY);
+	clearButton = new wxButton(panel, wxID_ANY, "Clear");
 
 	addButton->SetBackgroundColour(*wxCYAN);
 }
@@ -50,6 +51,37 @@ void MainFrame::AddSavedTasks()
 		checkBox->Insert(task.description, index);
 		checkBox->Check(index, task.done);
 	}
+}
+
+//making layout adaptive
+void MainFrame::SetupSizers()
+{
+	//headlineText->Show(false);
+	//inputField->Show(false);
+	//addButton->Show(false);
+	//clearButton->Show(false);
+	//checkBox->Show(false);
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(headlineText, wxSizerFlags().CenterHorizontal());
+	mainSizer->AddSpacer(25);
+
+	wxBoxSizer* inputSizer = new wxBoxSizer(wxHORIZONTAL);
+	inputSizer->Add(inputField, wxSizerFlags().Proportion(1));
+	inputSizer->AddSpacer(5);
+	inputSizer->Add(addButton);
+
+	mainSizer->Add(inputSizer,wxSizerFlags().Expand());
+	inputSizer->AddSpacer(5);
+	mainSizer->Add(checkBox, wxSizerFlags().Expand().Proportion(1));
+	inputSizer->AddSpacer(5);
+	mainSizer->Add(clearButton);
+	
+	wxGridSizer* outerSizer = new wxGridSizer(1);
+	outerSizer->Add(mainSizer, wxSizerFlags().Border(wxALL,25).Expand());
+
+	panel->SetSizer(outerSizer);
+	outerSizer->SetSizeHints(this);
 }
 
 void MainFrame::OnAddClick(wxCommandEvent& evt)
@@ -146,3 +178,4 @@ void MainFrame::onWindowClosed(wxCloseEvent& evt){
 	saveTaskToFile(tasks, "tasks.txt"); //if the file exists then save input to the file or it will create
 	evt.Skip();
 }
+

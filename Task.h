@@ -5,7 +5,7 @@
 struct Task
 {
 	std::string description;
-	bool done;
+	bool done; //0 -task incomplete /1 -task complete   
 };
 void saveTaskToFile(const std::vector<Task>& tasks, const std::string& filename);
 
